@@ -177,7 +177,7 @@ export default function DashboardPage() {
               </h2>
               <div className="bg-white rounded-lg p-4 flex flex-col items-center">
                 <QRCodeSVG
-                  value={subscription.id}
+                  value={`${window.location.origin}/verify/${subscription.id}`}
                   size={200}
                   level="H"
                   includeMargin
