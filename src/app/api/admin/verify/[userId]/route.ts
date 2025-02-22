@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 import { dbUtils } from "@/app/lib/db";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { userId: string } },
+  req: Request,
+  context: { params: { userId: string } }
 ) {
+  const { userId } = context.params;
   const {} = await auth.protect();
-  const { userId } = params;
 
   try {
     // TODO: Add admin role check here once Clerk roles are set up
