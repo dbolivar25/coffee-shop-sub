@@ -3,13 +3,9 @@ import { NextResponse } from "next/server";
 import { dbUtils } from "@/app/lib/db";
 
 export async function POST() {
-  try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const { userId } = auth().protect();
 
+  try {
     // Get current subscription
     const subscription = await dbUtils.getSubscription(userId);
     

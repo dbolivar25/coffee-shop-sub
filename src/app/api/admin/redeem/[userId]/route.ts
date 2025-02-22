@@ -6,14 +6,10 @@ export async function POST(
   request: Request,
   { params }: { params: { userId: string } }
 ) {
-  try {
-    const { userId: adminId } = await auth();
-    const { userId } = params;
-    
-    if (!adminId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const { userId: adminId } = auth().protect();
+  const { userId } = params;
 
+  try {
     // TODO: Add admin role check here once Clerk roles are set up
 
     const subscription = await dbUtils.getSubscription(userId);
