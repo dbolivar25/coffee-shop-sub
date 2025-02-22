@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Daily Coffee",
-  description: "Manage your daily coffee subscription",
+  description: "Your daily coffee subscription",
 };
 
 export default function RootLayout({
