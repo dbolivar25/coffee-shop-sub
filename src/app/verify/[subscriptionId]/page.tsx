@@ -6,7 +6,7 @@ import { Subscription } from "@/app/lib/db";
 export default function VerifyPage({
   params,
 }: {
-  params: { subscriptionId: string };
+  params: { subscriptionId: Promise<string> };
 }) {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ export default function VerifyPage({
   const fetchSubscription = async () => {
     try {
       const response = await fetch(
-        `/api/admin/verify/${params.subscriptionId}`,
+        `/api/admin/verify/${await params.subscriptionId}`,
       );
       const data = await response.json();
 
@@ -42,7 +42,7 @@ export default function VerifyPage({
     try {
       setRedeeming(true);
       const response = await fetch(
-        `/api/admin/redeem/${params.subscriptionId}`,
+        `/api/admin/redeem/${await params.subscriptionId}`,
         {
           method: "POST",
         },
