@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -24,6 +23,7 @@ export default function DashboardPage() {
       } else {
         setError(data.error);
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("Failed to fetch subscription status");
     } finally {
@@ -45,6 +45,7 @@ export default function DashboardPage() {
       } else {
         setError(data.error);
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("Failed to create subscription");
     } finally {
