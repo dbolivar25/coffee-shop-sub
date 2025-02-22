@@ -1,12 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { dbUtils } from "@/app/lib/db";
 
 export async function GET(
-  req: Request,
-  context: { params: { userId: string } }
+  req: NextRequest,
+  { params }: { params: { userId: string } }
 ) {
-  const { userId } = context.params;
+  const { userId } = params;
   const {} = await auth.protect();
 
   try {
