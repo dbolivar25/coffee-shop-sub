@@ -1,0 +1,29 @@
+import { auth } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+import { dbUtils } from "@/app/lib/db";
+
+export async function GET(
+  request: Request,
+  { params }: { params: { userId: string } }
+) {
+  try {
+    const { userId: adminId } = auth();
+    const { userId } = params;
+    
+    if (!adminId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // TODO: Add admin role check here once Clerk roles are set up
+
+    const subscription = await dbUtils.getSubscription(userId);
+    if (!subscription) {
+      return NextResponse.json({ error: "Subscription not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ subscription });
+  } catch (error) {
+    console.error('Error verifying subscription:', error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
