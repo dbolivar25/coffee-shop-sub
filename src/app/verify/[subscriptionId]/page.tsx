@@ -21,7 +21,7 @@ export default function VerifyPage({
   const fetchSubscription = async () => {
     try {
       const response = await fetch(
-        `/api/admin/verify/${await params.subscriptionId}`,
+        `/api/verify/${await params.subscriptionId}`,
       );
       const data = await response.json();
 
@@ -42,7 +42,7 @@ export default function VerifyPage({
     try {
       setRedeeming(true);
       const response = await fetch(
-        `/api/admin/redeem/${await params.subscriptionId}`,
+        `/api/redeem/${await params.subscriptionId}`,
         {
           method: "POST",
         },

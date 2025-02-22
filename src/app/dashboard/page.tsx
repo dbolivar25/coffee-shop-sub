@@ -16,7 +16,7 @@ export default function DashboardPage() {
 
   const fetchSubscription = async () => {
     try {
-      const response = await fetch("/api/subscription/status");
+      const response = await fetch("/api/subscription");
       const data = await response.json();
 
       if (response.ok) {
@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const handleSubscribe = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/subscription/create", {
+      const response = await fetch("/api/subscription", {
         method: "POST",
       });
       const data = await response.json();
