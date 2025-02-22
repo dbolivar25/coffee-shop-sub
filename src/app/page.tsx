@@ -120,7 +120,7 @@ export default function Home() {
       <footer className="bg-gray-50 dark:bg-gray-900/50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            <p>© 2024 Coffee Shop Subscription. All rights reserved.</p>
+            <p>© 2024 Daniel Bolivar. All rights reserved.</p>
           </div>
         </div>
       </footer>
