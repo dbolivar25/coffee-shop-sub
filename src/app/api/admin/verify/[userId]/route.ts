@@ -2,17 +2,11 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { dbUtils } from "@/app/lib/db";
 
-type Props = {
-  params: {
-    userId: string
-  }
-}
-
 export async function GET(
   request: NextRequest,
-  props: Props
+  context: { params: Promise<{ userId: string }> }
 ) {
-  const { userId } = props.params;
+  const { userId } = await context.params;
   const {} = await auth.protect();
 
   try {
