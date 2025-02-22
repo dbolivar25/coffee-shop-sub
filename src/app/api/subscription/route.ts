@@ -9,7 +9,7 @@ export async function GET() {
   }
 
   try {
-    const subscription = await dbUtils.getSubscription(session.userId);
+    const subscription = await dbUtils.getSubscriptionByUserId(session.userId);
     return NextResponse.json({ subscription });
   } catch (error) {
     console.error("Error fetching subscription:", error);

@@ -6,7 +6,7 @@ import { Subscription } from "@/app/lib/db";
 export default function VerifyPage({
   params,
 }: {
-  params: { subscriptionId: Promise<string> };
+  params: Promise<{ subscriptionId: string }>;
 }) {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,13 +16,12 @@ export default function VerifyPage({
 
   useEffect(() => {
     fetchSubscription();
-  }, []);
+  });
 
   const fetchSubscription = async () => {
     try {
-      const response = await fetch(
-        `/api/verify/${await params.subscriptionId}`,
-      );
+      const { subscriptionId } = await params;
+      const response = await fetch(`/api/verify/${subscriptionId}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -41,12 +40,10 @@ export default function VerifyPage({
   const handleRedeem = async () => {
     try {
       setRedeeming(true);
-      const response = await fetch(
-        `/api/redeem/${await params.subscriptionId}`,
-        {
-          method: "POST",
-        },
-      );
+      const { subscriptionId } = await params;
+      const response = await fetch(`/api/redeem/${subscriptionId}`, {
+        method: "POST",
+      });
       const data = await response.json();
 
       if (response.ok) {
