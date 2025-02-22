@@ -7,7 +7,7 @@ export async function POST(
   { params }: { params: { userId: string } }
 ) {
   try {
-    const { userId: adminId } = auth();
+    const { userId: adminId } = await auth();
     const { userId } = params;
     
     if (!adminId) {
