@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
-import { auth } from '@clerk/nextjs';
-import { Subscription } from '../lib/db';
+import { useEffect, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
+import { Subscription } from "../lib/db";
 
 export default function DashboardPage() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -16,16 +15,16 @@ export default function DashboardPage() {
 
   const fetchSubscription = async () => {
     try {
-      const response = await fetch('/api/subscription/status');
+      const response = await fetch("/api/subscription/status");
       const data = await response.json();
-      
+
       if (response.ok) {
         setSubscription(data.subscription);
       } else {
         setError(data.error);
       }
     } catch (err) {
-      setError('Failed to fetch subscription status');
+      setError("Failed to fetch subscription status");
     } finally {
       setLoading(false);
     }
@@ -33,11 +32,11 @@ export default function DashboardPage() {
 
   const handleSubscribe = async () => {
     try {
-      const response = await fetch('/api/subscription/create', {
-        method: 'POST',
+      const response = await fetch("/api/subscription/create", {
+        method: "POST",
       });
       const data = await response.json();
-      
+
       if (response.ok) {
         setSubscription(data.subscription);
         setError(null);
@@ -45,7 +44,7 @@ export default function DashboardPage() {
         setError(data.error);
       }
     } catch (err) {
-      setError('Failed to create subscription');
+      setError("Failed to create subscription");
     }
   };
 
@@ -70,7 +69,9 @@ export default function DashboardPage() {
       {!subscription ? (
         <div className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Get Started</h2>
-          <p className="mb-4">You don't have an active subscription yet.</p>
+          <p className="mb-4">
+            You don&apos;t have an active subscription yet.
+          </p>
           <button
             onClick={handleSubscribe}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
@@ -84,13 +85,13 @@ export default function DashboardPage() {
             <h2 className="text-xl font-semibold mb-4">Subscription Status</h2>
             <div className="space-y-2">
               <p>
-                Drinks Remaining Today:{' '}
+                Drinks Remaining Today:{" "}
                 <span className="font-semibold">
                   {subscription.daily_drinks_remaining}
                 </span>
               </p>
               <p>
-                Last Reset:{' '}
+                Last Reset:{" "}
                 <span className="font-semibold">
                   {new Date(subscription.last_reset_date).toLocaleDateString()}
                 </span>
