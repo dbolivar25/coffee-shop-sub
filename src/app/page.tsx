@@ -1,6 +1,5 @@
-// import Image from "next/image";
 import Link from "next/link";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 export default function Home() {
   return (
@@ -19,25 +18,19 @@ export default function Home() {
 
           <div className="flex gap-4 justify-center">
             <SignedOut>
-              <Link
-                href="/sign-up"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-              >
-                Get Started
-              </Link>
-              <Link
-                href="/sign-in"
-                className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-full text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-              >
-                Sign In
-              </Link>
+              <div className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                <SignUpButton />
+              </div>
+              <div className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-full text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                <SignInButton />
+              </div>
             </SignedOut>
             <SignedIn>
               <Link
                 href="/dashboard"
                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
               >
-                Go to Dashboard
+                Your Subscription
               </Link>
             </SignedIn>
           </div>
@@ -68,7 +61,7 @@ export default function Home() {
                 Save Time
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Skip the line with our digital subscription system
+                Join through our digital subscription system
               </p>
             </div>
 

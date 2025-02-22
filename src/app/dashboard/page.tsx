@@ -68,11 +68,8 @@ export default function DashboardPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Coffee Shop Dashboard
+            Your Coffee Subscription
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage your daily coffee subscription
-          </p>
         </div>
 
         {error && (
@@ -136,7 +133,7 @@ export default function DashboardPage() {
                   Processing...
                 </>
               ) : (
-                "Subscribe Now (Mock Payment)"
+                "Subscribe Now"
               )}
             </button>
           </div>
