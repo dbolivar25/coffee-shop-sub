@@ -3,11 +3,14 @@ import { NextResponse } from "next/server";
 import { dbUtils } from "@/app/lib/db";
 
 export async function GET() {
-  const { userId } = await auth.protect();
+  const session = await auth();
+  if (!session.userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   try {
-    const subscription = await dbUtils.getSubscription(userId);
-
+    const subscription = await dbUtils.getSubscription(session.userId);
+    // Return null subscription instead of erroring
     return NextResponse.json({ subscription });
   } catch (error) {
     console.error("Error fetching subscription:", error);

@@ -23,7 +23,13 @@ export const dbUtils = {
       .eq('user_id', userId)
       .single()
     
-    if (error) throw error
+    if (error) {
+      // If no subscription found, return null instead of throwing error
+      if (error.code === 'PGRST116') {
+        return null;
+      }
+      throw error;
+    }
     return data as Subscription
   },
 
