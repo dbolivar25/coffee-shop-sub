@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 
@@ -13,10 +13,10 @@ export default function Home() {
             <span className="text-blue-600 dark:text-blue-400">Simplified</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-            Subscribe once, enjoy fresh coffee daily. No more waiting in lines or
-            carrying punch cards.
+            Subscribe once, enjoy fresh coffee daily. No more waiting in lines
+            or carrying punch cards.
           </p>
-          
+
           <div className="flex gap-4 justify-center">
             <SignedOut>
               <Link
