@@ -23,6 +23,7 @@ export default function DashboardPage() {
       } else {
         setError(data.error);
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("Failed to fetch subscription status");
     } finally {
@@ -43,6 +44,7 @@ export default function DashboardPage() {
       } else {
         setError(data.error);
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("Failed to create subscription");
     }
