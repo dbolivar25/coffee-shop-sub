@@ -20,7 +20,9 @@ export default function VerifyPage({
 
   const fetchSubscription = async () => {
     try {
-      const response = await fetch(`/api/admin/verify/${params.subscriptionId}`);
+      const response = await fetch(
+        `/api/admin/verify/${params.subscriptionId}`,
+      );
       const data = await response.json();
 
       if (response.ok) {
@@ -28,6 +30,7 @@ export default function VerifyPage({
       } else {
         setError(data.error);
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("Failed to fetch subscription");
     } finally {
@@ -42,7 +45,7 @@ export default function VerifyPage({
         `/api/admin/redeem/${params.subscriptionId}`,
         {
           method: "POST",
-        }
+        },
       );
       const data = await response.json();
 
@@ -52,6 +55,7 @@ export default function VerifyPage({
       } else {
         setError(data.error);
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("Failed to redeem drink");
     } finally {
@@ -107,7 +111,7 @@ export default function VerifyPage({
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    }
+                    },
                   )}
                 </p>
               </div>
