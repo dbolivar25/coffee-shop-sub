@@ -30,6 +30,7 @@ export default function VerifyPage({
             setError(data.error);
           }
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         if (mounted) {
           setError("Failed to fetch subscription");
