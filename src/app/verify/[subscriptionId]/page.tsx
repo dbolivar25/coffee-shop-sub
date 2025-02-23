@@ -15,27 +15,38 @@ export default function VerifyPage({
   const [redeemed, setRedeemed] = useState(false);
 
   useEffect(() => {
-    fetchSubscription();
-  });
+    let mounted = true;
 
-  const fetchSubscription = async () => {
-    try {
-      const { subscriptionId } = await params;
-      const response = await fetch(`/api/verify/${subscriptionId}`);
-      const data = await response.json();
+    const fetchData = async () => {
+      try {
+        const { subscriptionId } = await params;
+        const response = await fetch(`/api/verify/${subscriptionId}`);
+        const data = await response.json();
 
-      if (response.ok) {
-        setSubscription(data.subscription);
-      } else {
-        setError(data.error);
+        if (mounted) {
+          if (response.ok) {
+            setSubscription(data.subscription);
+          } else {
+            setError(data.error);
+          }
+        }
+      } catch (err) {
+        if (mounted) {
+          setError("Failed to fetch subscription");
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      setError("Failed to fetch subscription");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchData();
+
+    return () => {
+      mounted = false;
+    };
+  }, [params]); // params as dependency
 
   const handleRedeem = async () => {
     try {
