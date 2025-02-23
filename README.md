@@ -1,222 +1,180 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with
-[`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Coffee Shop Subscription App
+
+A digital subscription system built with Next.js, using Clerk for authentication and Supabase for the database. Customers receive QR codes that staff can scan to verify and redeem drinks.
+
+## System Overview
+
+### Technical Stack
+- Next.js 14 (App Router)
+- Clerk for authentication
+- Supabase for database
+- QR code generation using `qrcode.react`
+- TailwindCSS for styling
+
+### Core Features
+- Customer subscription management
+- QR code generation for redemptions
+- Staff verification interface
+- Automatic daily drink reset
+- Dark mode support
+
+### Database Structure
+```sql
+-- Enable UUID extension
+create extension if not exists "uuid-ossp";
+
+-- Subscriptions table
+create table subscriptions (
+    id uuid default uuid_generate_v4() primary key,
+    user_id text not null unique,
+    daily_drinks_remaining integer default 3,
+    last_reset_date timestamp with time zone default now(),
+    created_at timestamp with time zone default now()
+);
+
+-- Redemptions table
+create table redemptions (
+    id uuid default uuid_generate_v4() primary key,
+    subscription_id uuid references subscriptions(id),
+    created_at timestamp with time zone default now()
+);
+
+-- Enable RLS
+alter table subscriptions enable row level security;
+alter table redemptions enable row level security;
+
+-- RLS Policies
+create policy "Users can view own subscription"
+    on subscriptions for select
+    using (auth.jwt() ->> 'sub' = user_id);
+
+create policy "Admins can update subscriptions"
+    on subscriptions for all
+    using (auth.jwt() ->> 'clerk_role' = 'admin');
+
+create policy "Admins can manage redemptions"
+    on redemptions for all
+    using (auth.jwt() ->> 'clerk_role' = 'admin');
+```
+
+### API Routes
+1. Subscription Management
+   - GET /api/subscription - Get user's subscription
+   - POST /api/subscription - Create new subscription
+
+2. Staff Verification
+   - GET /api/verify/[subscriptionId] - Verify subscription
+   - POST /api/redeem/[subscriptionId] - Redeem a drink
+
+### Automatic Reset System
+```sql
+-- Enable pg_cron
+create extension if not exists pg_cron;
+
+-- Create reset function
+create or replace function public.reset_daily_drinks()
+returns void as $$
+begin
+  update subscriptions 
+  set daily_drinks_remaining = 3,
+      last_reset_date = current_timestamp
+  where last_reset_date < current_date;
+end;
+$$ language plpgsql;
+
+-- Schedule midnight reset
+select cron.schedule(
+  'reset-drinks',
+  '0 0 * * *',
+  'select public.reset_daily_drinks();'
+);
+```
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
+```
 
+3. Set up environment variables:
+```env
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+```
+
+4. Run the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the
-result.
+5. Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page
-auto-updates as you edit the file.
+## Features
 
-This project uses
-[`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts)
-to automatically optimize and load [Geist](https://vercel.com/font), a new font
-family for Vercel.
+### Customer Features
+- Sign up/login with Clerk
+- Purchase subscription (mock payment)
+- View subscription status
+- Generate QR code for redemption
+- Track remaining daily drinks
 
-## App Description
+### Staff Features
+- Scan customer QR codes
+- Verify subscription status
+- Process drink redemptions
+- View customer drink entitlements
 
-### Coffee Shop Subscription MVP Project Plan (Next.js + Clerk)
+### System Features
+- Automatic midnight drink reset
+- Row Level Security in database
+- Role-based access control
+- Dark mode support
+- Responsive design
 
-### System Overview
+## Security
 
-A basic digital subscription system built with Next.js, using Clerk for
-authentication. Customers receive QR codes that staff can scan to verify and
-redeem drinks. Payment processing will be mocked for the presentation.
+- Authentication via Clerk
+- Database RLS policies
+- Protected API routes
+- Admin-only verification pages
+- Secure QR code generation
 
-### Technical Stack
+## Development
 
-- Next.js for frontend and API routes
-- Clerk for authentication and user management
-- Prisma or SQL for database
-- QR code generation using `qrcode` library
-
-### Core Components
-
-#### Database Structure
-
-```sql
--- Using timestamps and proper relations
-CREATE TABLE subscriptions (
-    id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
-    daily_drinks_remaining INTEGER DEFAULT 3,
-    last_reset_date TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id)
-);
-
-CREATE TABLE redemptions (
-    id TEXT PRIMARY KEY,
-    subscription_id TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(subscription_id) REFERENCES subscriptions(id)
-);
+### File Structure
+```
+src/
+├── app/
+│   ├── api/              # API routes
+│   ├── subscription/     # Customer dashboard
+│   ├── verify/          # Staff verification
+│   └── lib/             # Shared utilities
 ```
 
-#### API Routes
+### Key Components
+- `subscription/page.tsx` - Customer dashboard
+- `verify/[subscriptionId]/page.tsx` - Staff verification
+- `lib/db.ts` - Database utilities
+- `middleware.ts` - Route protection
 
-1. Subscription Management
+## Deployment
 
-   - POST /api/subscription/create (mocked payment)
-   - GET /api/subscription/status
-   - POST /api/subscription/redeem
+The app can be deployed on Vercel with:
+- Clerk for authentication
+- Supabase for database
+- Vercel for hosting
 
-2. Admin Verification
-   - GET /api/admin/verify/:userId
-   - POST /api/admin/redeem/:userId
-
-### Implementation Plan
-
-#### Day 1 (Already Complete)
-
-- ✓ Set up Next.js project
-- ✓ Integrate Clerk authentication
-
-#### Day 2-3
-
-1. Database Setup
-
-   - Set up database schema
-   - Create database utility functions
-   - Test database connections
-
-2. Core Customer Features
-   - Customer dashboard page
-   - QR code generation
-   - Mock subscription purchase
-
-#### Day 4-5
-
-1. Admin Features
-
-   - Admin role checking through Clerk
-   - Verification page
-   - Redemption functionality
-
-2. Daily Reset System
-   - Reset drink count at midnight
-   - Track redemption history
-
-#### Day 6-7
-
-- Manual testing
-- Bug fixes
-- UI polish
-- Presentation preparation
-
-### Required Features
-
-#### Customer Dashboard
-
-- Display subscription status
-- Show QR code
-- Show remaining drinks
-- Mock payment button
-
-#### Admin Verification
-
-- Protected by Clerk admin role
-- Show customer details
-- Display remaining drinks
-- Redemption confirmation button
-
-### Security Considerations
-
-- Use Clerk's built-in RBAC for admin protection
-- Middleware to protect admin routes
-- API route protection
-- Input validation on all endpoints
-
-### Manual Testing Checklist
-
-#### Auth Flow
-
-- Sign up with Clerk
-- Sign in with Clerk
-- Admin role assignment works
-
-#### Customer Flow
-
-- Purchase mock subscription
-- View dashboard
-- Generate QR code
-- Track drink count
-
-#### Admin Flow
-
-- Access admin pages
-- Scan/enter QR code
-- View customer details
-- Process redemption
-- Verify drink count updates
-
-#### System Tests
-
-- Daily reset works
-- QR codes are valid
-- Admin protection works
-- Rate limiting works
-
-### Definition of Done
-
-1. Customer can:
-
-   - Sign up/login
-   - Get a subscription (mocked)
-   - View their QR code
-   - See remaining drinks
-
-2. Admin can:
-
-   - Login with admin privileges
-   - Access verification page
-   - Process drink redemptions
-   - See customer details
-
-3. System requirements:
-   - Daily drink limits enforced
-   - Midnight reset works
-   - All core flows functional
-   - No critical bugs
-
-### Next Steps
-
-1. Database setup
-2. Customer dashboard implementation
-3. QR code generation
-4. Admin verification page
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out
-[the Next.js GitHub repository](https://github.com/vercel/next.js) - your
-feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the
-[Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
-
-Check out our
-[Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying)
-for more details.
+## Future Enhancements
+- Real payment processing
+- Email notifications
+- Usage analytics
+- Staff management interface
+- Customer purchase history
