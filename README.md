@@ -1,10 +1,13 @@
 # Coffee Shop Subscription App
 
-A digital subscription system built with Next.js, using Clerk for authentication and Supabase for the database. Customers receive QR codes that staff can scan to verify and redeem drinks.
+A digital subscription system built with Next.js, using Clerk for authentication
+and Supabase for the database. Customers receive QR codes that staff can scan to
+verify and redeem drinks.
 
 ## System Overview
 
 ### Technical Stack
+
 - Next.js 14 (App Router)
 - Clerk for authentication
 - Supabase for database
@@ -12,6 +15,7 @@ A digital subscription system built with Next.js, using Clerk for authentication
 - TailwindCSS for styling
 
 ### Core Features
+
 - Customer subscription management
 - QR code generation for redemptions
 - Staff verification interface
@@ -19,6 +23,7 @@ A digital subscription system built with Next.js, using Clerk for authentication
 - Dark mode support
 
 ### Database Structure
+
 ```sql
 -- Enable UUID extension
 create extension if not exists "uuid-ossp";
@@ -38,27 +43,12 @@ create table redemptions (
     subscription_id uuid references subscriptions(id),
     created_at timestamp with time zone default now()
 );
-
--- Enable RLS
-alter table subscriptions enable row level security;
-alter table redemptions enable row level security;
-
--- RLS Policies
-create policy "Users can view own subscription"
-    on subscriptions for select
-    using (auth.jwt() ->> 'sub' = user_id);
-
-create policy "Admins can update subscriptions"
-    on subscriptions for all
-    using (auth.jwt() ->> 'clerk_role' = 'admin');
-
-create policy "Admins can manage redemptions"
-    on redemptions for all
-    using (auth.jwt() ->> 'clerk_role' = 'admin');
 ```
 
 ### API Routes
+
 1. Subscription Management
+
    - GET /api/subscription - Get user's subscription
    - POST /api/subscription - Create new subscription
 
@@ -67,6 +57,7 @@ create policy "Admins can manage redemptions"
    - POST /api/redeem/[subscriptionId] - Redeem a drink
 
 ### Automatic Reset System
+
 ```sql
 -- Enable pg_cron
 create extension if not exists pg_cron;
@@ -75,7 +66,7 @@ create extension if not exists pg_cron;
 create or replace function public.reset_daily_drinks()
 returns void as $$
 begin
-  update subscriptions 
+  update subscriptions
   set daily_drinks_remaining = 3,
       last_reset_date = current_timestamp
   where last_reset_date < current_date;
@@ -94,23 +85,36 @@ select cron.schedule(
 
 1. Clone the repository
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables:
+
 ```env
 # Clerk
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 
 # Supabase
+POSTGRES_URL=
+POSTGRES_PRISMA_URL=
+SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_URL=
+POSTGRES_URL_NON_POOLING=
+SUPABASE_JWT_SECRET=
+POSTGRES_USER=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+POSTGRES_PASSWORD=
+POSTGRES_DATABASE=
 SUPABASE_SERVICE_ROLE_KEY=
+POSTGRES_HOST=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
 4. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -120,6 +124,7 @@ npm run dev
 ## Features
 
 ### Customer Features
+
 - Sign up/login with Clerk
 - Purchase subscription (mock payment)
 - View subscription status
@@ -127,15 +132,15 @@ npm run dev
 - Track remaining daily drinks
 
 ### Staff Features
+
 - Scan customer QR codes
 - Verify subscription status
 - Process drink redemptions
 - View customer drink entitlements
 
 ### System Features
+
 - Automatic midnight drink reset
-- Row Level Security in database
-- Role-based access control
 - Dark mode support
 - Responsive design
 
@@ -150,6 +155,7 @@ npm run dev
 ## Development
 
 ### File Structure
+
 ```
 src/
 ├── app/
@@ -160,6 +166,7 @@ src/
 ```
 
 ### Key Components
+
 - `subscription/page.tsx` - Customer dashboard
 - `verify/[subscriptionId]/page.tsx` - Staff verification
 - `lib/db.ts` - Database utilities
@@ -168,11 +175,13 @@ src/
 ## Deployment
 
 The app can be deployed on Vercel with:
+
 - Clerk for authentication
 - Supabase for database
 - Vercel for hosting
 
 ## Future Enhancements
+
 - Real payment processing
 - Email notifications
 - Usage analytics
